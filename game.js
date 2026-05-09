@@ -21,7 +21,7 @@ const rankImage = document.getElementById("rankImage");
 const retryBtn = document.getElementById("retryBtn");
 
 let score = 0;
-let time = 30;
+let time = 45;
 let gameStarted = false;
 
 let germs = [];
@@ -56,7 +56,7 @@ function startGame(e) {
   if (gameStarted) return;
 
   score = 0;
-  time = 30;
+  time = 45;
 
   germs = [];
 
@@ -296,7 +296,7 @@ function endGame() {
     rankImage.src =
       "rank_best.png";
 
-  } else if (score >= 400) {
+  } else if (score >= 450) {
 
     rankText.textContent =
       "ピカピカ！";
@@ -307,11 +307,21 @@ function endGame() {
   } else {
 
     rankText.textContent =
-      "みがきのこし…";
+      "みがき残し…";
 
     rankImage.src =
       "rank_bad.png";
   }
+
+  retryBtn.style.opacity = 0;
+  retryBtn.style.pointerEvents = "none";
+
+  setTimeout(() => {
+
+    retryBtn.style.opacity = 1;
+    retryBtn.style.pointerEvents = "auto";
+
+  }, 900);
 }
 
 function resetToTitle(e) {
@@ -322,6 +332,9 @@ function resetToTitle(e) {
 
   clearTimeout(spawnTimer);
   clearInterval(countTimer);
+
+  retryBtn.style.opacity = 0;
+  retryBtn.style.pointerEvents = "none";
 
   showScreen(titleScreen);
 }

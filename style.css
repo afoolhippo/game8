@@ -262,7 +262,8 @@ h2 {
 
   transition:
     transform 0.05s,
-    box-shadow 0.05s;
+    box-shadow 0.05s,
+    opacity 0.2s;
 }
 
 #controls button:active,
@@ -303,6 +304,12 @@ h2 {
   font-size: 28px;
 
   background: #ffffff;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  margin-top: 32px;
 }
 
 /* RESULT */
@@ -327,7 +334,7 @@ h2 {
 
 #rankImage {
 
-  width: 180px;
+  width: 220px;
 
   image-rendering: pixelated;
 }
