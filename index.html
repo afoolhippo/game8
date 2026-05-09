@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+
+  <title>はみがきしようぜ！</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<div id="gameContainer">
+
+  <!-- TITLE -->
+  <div id="titleScreen" class="screen active">
+
+    <img
+      id="titleLogo"
+      src="title.png"
+      alt=""
+    >
+
+    <p class="subtitle">
+      かわいいむしばきんを<br>
+      ゴシゴシたいじ！
+    </p>
+
+    <p class="startText">
+      タップではじめる！
+    </p>
+
+  </div>
+
+  <!-- GAME -->
+  <div id="gameScreen" class="screen">
+
+    <div id="hud">
+
+      <div>
+        とくてん :
+        <span id="score">0</span>
+      </div>
+
+      <div>
+        のこり :
+        <span id="time">30</span>
+      </div>
+
+    </div>
+
+    <div id="mouthArea">
+
+      <img
+        id="mouth"
+        src="mouth.png"
+        alt=""
+      >
+
+      <img
+        id="toothbrush"
+        src="toothbrush.png"
+        alt=""
+      >
+
+      <div id="germLayer"></div>
+
+      <div id="foamLayer"></div>
+
+    </div>
+
+    <div id="controls">
+
+      <button id="leftBtn">
+        ◀
+      </button>
+
+      <button id="brushBtn">
+        ゴシゴシ！
+      </button>
+
+      <button id="rightBtn">
+        ▶
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- RESULT -->
+  <div id="resultScreen" class="screen">
+
+    <h2>けっか</h2>
+
+    <div id="finalScore">
+      0てん
+    </div>
+
+    <img
+      id="rankImage"
+      src=""
+      alt=""
+    >
+
+    <p id="rankText"></p>
+
+    <button id="retryBtn">
+      もう１回
+    </button>
+
+  </div>
+
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
