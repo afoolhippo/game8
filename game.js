@@ -20,6 +20,21 @@ const rankImage = document.getElementById("rankImage");
 
 const retryBtn = document.getElementById("retryBtn");
 
+// 音声
+const bgm = new Audio("bgm.mp3");
+bgm.loop = false;
+bgm.volume = 0.6;
+
+const seBrush = new Audio("brush.mp3");
+const seBossDown = new Audio("boss_down.mp3");
+const seResult = new Audio("result.mp3");
+const seButton = new Audio("button.mp3");
+
+function playSound(sound) {
+  sound.currentTime = 0;
+  sound.play().catch(() => {});
+}
+
 let score = 0;
 let time = 45;
 let gameStarted = false;
@@ -41,7 +56,6 @@ const lanes = [
 const brushOffsetX = 180;
 
 function showScreen(screen) {
-
   titleScreen.classList.remove("active");
   gameScreen.classList.remove("active");
   resultScreen.classList.remove("active");
@@ -50,16 +64,15 @@ function showScreen(screen) {
 }
 
 function startGame(e) {
-
   if (e) e.preventDefault();
 
   if (gameStarted) return;
 
+  playSound(seButton);
+
   score = 0;
   time = 45;
-
   germs = [];
-
   brushLane = 1;
 
   germLayer.innerHTML = "";
@@ -68,29 +81,31 @@ function startGame(e) {
   scoreText.textContent = score;
   timeText.textContent = time;
 
+  retryBtn.style.opacity = 0;
+  retryBtn.style.pointerEvents = "none";
+
   moveBrush();
 
   showScreen(gameScreen);
 
   gameStarted = true;
 
+  bgm.currentTime = 0;
+  bgm.play().catch(() => {});
+
   spawnLoop();
 
   countTimer = setInterval(() => {
-
     time--;
-
     timeText.textContent = time;
 
     if (time <= 0) {
       endGame();
     }
-
   }, 1000);
 }
 
 function spawnLoop() {
-
   if (!gameStarted) return;
 
   spawnGerm();
@@ -99,24 +114,15 @@ function spawnLoop() {
 }
 
 function spawnGerm() {
-
-  const lane = Math.floor(
-    Math.random() * lanes.length
-  );
-
+  const lane = Math.floor(Math.random() * lanes.length);
   const spot = lanes[lane];
 
   const isBoss = Math.random() < 0.15;
 
   const germ = document.createElement("img");
 
-  germ.src = isBoss
-    ? "boss.png"
-    : "germ.png";
-
-  germ.className = isBoss
-    ? "boss"
-    : "germ";
+  germ.src = isBoss ? "boss.png" : "germ.png";
+  germ.className = isBoss ? "boss" : "germ";
 
   germ.style.left = isBoss
     ? (spot.x - 28) + "px"
@@ -127,20 +133,14 @@ function spawnGerm() {
     : spot.y + "px";
 
   germ.dataset.lane = lane;
-
   germ.dataset.hp = isBoss ? 3 : 1;
-
-  germ.dataset.type = isBoss
-    ? "boss"
-    : "normal";
+  germ.dataset.type = isBoss ? "boss" : "normal";
 
   germLayer.appendChild(germ);
-
   germs.push(germ);
 }
 
 function attack(e) {
-
   if (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -154,63 +154,54 @@ function attack(e) {
     toothbrush.classList.remove("brushAttack");
   }, 80);
 
+  let hitSomething = false;
+  let defeatedBoss = false;
+
   for (let i = germs.length - 1; i >= 0; i--) {
-
     const germ = germs[i];
-
-    const germLane = Number(
-      germ.dataset.lane
-    );
+    const germLane = Number(germ.dataset.lane);
 
     if (germLane === brushLane) {
+      hitSomething = true;
 
-      let hp = Number(
-        germ.dataset.hp
-      );
-
+      let hp = Number(germ.dataset.hp);
       hp--;
-
       germ.dataset.hp = hp;
 
       const spot = lanes[germLane];
 
-      makeFoam(
-        spot.x - 10,
-        spot.y - 10
-      );
+      makeFoam(spot.x - 10, spot.y - 10);
 
       if (hp <= 0) {
-
-        const isBoss =
-          germ.dataset.type === "boss";
+        const isBoss = germ.dataset.type === "boss";
 
         score += isBoss ? 50 : 10;
-
         scoreText.textContent = score;
 
+        if (isBoss) defeatedBoss = true;
+
         germ.remove();
-
         germs.splice(i, 1);
-
       } else {
-
-        germ.style.transform =
-          "scale(0.85) rotate(-8deg)";
+        germ.style.transform = "scale(0.85) rotate(-8deg)";
 
         setTimeout(() => {
-
           if (germ) {
             germ.style.transform = "";
           }
-
         }, 120);
       }
     }
   }
+
+  if (defeatedBoss) {
+    playSound(seBossDown);
+  } else if (hitSomething) {
+    playSound(seBrush);
+  }
 }
 
 function makeFoam(x, y) {
-
   const foam = document.createElement("img");
 
   foam.src = "foam.png";
@@ -227,22 +218,19 @@ function makeFoam(x, y) {
 }
 
 function moveBrush() {
-
-  const targetX =
-    lanes[brushLane].x - brushOffsetX;
-
-  toothbrush.style.left =
-    targetX + "px";
+  const targetX = lanes[brushLane].x - brushOffsetX;
+  toothbrush.style.left = targetX + "px";
 }
 
 function moveLeft(e) {
-
   if (e) {
     e.preventDefault();
     e.stopPropagation();
   }
 
   if (!gameStarted) return;
+
+  playSound(seButton);
 
   brushLane--;
 
@@ -254,13 +242,14 @@ function moveLeft(e) {
 }
 
 function moveRight(e) {
-
   if (e) {
     e.preventDefault();
     e.stopPropagation();
   }
 
   if (!gameStarted) return;
+
+  playSound(seButton);
 
   brushLane++;
 
@@ -272,66 +261,56 @@ function moveRight(e) {
 }
 
 function endGame() {
-
   gameStarted = false;
 
   clearTimeout(spawnTimer);
   clearInterval(countTimer);
 
+  bgm.pause();
+  bgm.currentTime = 0;
+
   germLayer.innerHTML = "";
   foamLayer.innerHTML = "";
-
   germs = [];
 
   showScreen(resultScreen);
 
-  finalScore.textContent =
-    score + "てん";
+  playSound(seResult);
+
+  finalScore.textContent = score + "てん";
 
   if (score >= 800) {
-
-    rankText.textContent =
-      "はみがきマスター！";
-
-    rankImage.src =
-      "rank_best.png";
-
+    rankText.textContent = "はみがきマスター！";
+    rankImage.src = "rank_best.png";
   } else if (score >= 450) {
-
-    rankText.textContent =
-      "ピカピカ！";
-
-    rankImage.src =
-      "rank_good.png";
-
+    rankText.textContent = "ピカピカ！";
+    rankImage.src = "rank_good.png";
   } else {
-
-    rankText.textContent =
-      "みがき残し…";
-
-    rankImage.src =
-      "rank_bad.png";
+    rankText.textContent = "みがき残し…";
+    rankImage.src = "rank_bad.png";
   }
 
   retryBtn.style.opacity = 0;
   retryBtn.style.pointerEvents = "none";
 
   setTimeout(() => {
-
     retryBtn.style.opacity = 1;
     retryBtn.style.pointerEvents = "auto";
-
   }, 900);
 }
 
 function resetToTitle(e) {
-
   if (e) e.preventDefault();
+
+  playSound(seButton);
 
   gameStarted = false;
 
   clearTimeout(spawnTimer);
   clearInterval(countTimer);
+
+  bgm.pause();
+  bgm.currentTime = 0;
 
   retryBtn.style.opacity = 0;
   retryBtn.style.pointerEvents = "none";
@@ -339,57 +318,17 @@ function resetToTitle(e) {
   showScreen(titleScreen);
 }
 
-titleScreen.addEventListener(
-  "click",
-  startGame
-);
+titleScreen.addEventListener("click", startGame);
+titleScreen.addEventListener("touchstart", startGame, { passive: false });
 
-titleScreen.addEventListener(
-  "touchstart",
-  startGame,
-  { passive: false }
-);
+leftBtn.addEventListener("click", moveLeft);
+rightBtn.addEventListener("click", moveRight);
 
-leftBtn.addEventListener(
-  "click",
-  moveLeft
-);
+leftBtn.addEventListener("touchstart", moveLeft, { passive: false });
+rightBtn.addEventListener("touchstart", moveRight, { passive: false });
 
-rightBtn.addEventListener(
-  "click",
-  moveRight
-);
+brushBtn.addEventListener("click", attack);
+brushBtn.addEventListener("touchstart", attack, { passive: false });
 
-leftBtn.addEventListener(
-  "touchstart",
-  moveLeft,
-  { passive: false }
-);
-
-rightBtn.addEventListener(
-  "touchstart",
-  moveRight,
-  { passive: false }
-);
-
-brushBtn.addEventListener(
-  "click",
-  attack
-);
-
-brushBtn.addEventListener(
-  "touchstart",
-  attack,
-  { passive: false }
-);
-
-retryBtn.addEventListener(
-  "click",
-  resetToTitle
-);
-
-retryBtn.addEventListener(
-  "touchstart",
-  resetToTitle,
-  { passive: false }
-);
+retryBtn.addEventListener("click", resetToTitle);
+retryBtn.addEventListener("touchstart", resetToTitle, { passive: false });
