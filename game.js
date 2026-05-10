@@ -16,15 +16,20 @@ const leftBtn = document.getElementById("leftBtn");
 const rightBtn = document.getElementById("rightBtn");
 const brushBtn = document.getElementById("brushBtn");
 
+const backButton = document.getElementById("backButton");
+
 const finalScore = document.getElementById("finalScore");
 const rankText = document.getElementById("rankText");
 const rankImage = document.getElementById("rankImage");
+const resultComment =
+  document.getElementById("resultComment");
 
+const shareBtn = document.getElementById("shareBtn");
 const retryBtn = document.getElementById("retryBtn");
+const homeBtn = document.getElementById("homeBtn");
 
 // 音声
 const bgm = new Audio("bgm.mp3");
-bgm.loop = false;
 bgm.volume = 0.6;
 
 const seStart = new Audio("start.mp3");
@@ -40,6 +45,7 @@ function playSound(sound) {
 
 let score = 0;
 let time = 45;
+
 let gameStarted = false;
 let countingDown = false;
 
@@ -61,6 +67,7 @@ const lanes = [
 const brushOffsetX = 180;
 
 function showScreen(screen) {
+
   titleScreen.classList.remove("active");
   gameScreen.classList.remove("active");
   resultScreen.classList.remove("active");
@@ -69,6 +76,7 @@ function showScreen(screen) {
 }
 
 function startGame(e) {
+
   if (e) e.preventDefault();
 
   if (gameStarted || countingDown) return;
@@ -77,7 +85,9 @@ function startGame(e) {
 
   score = 0;
   time = 45;
+
   germs = [];
+
   brushLane = 1;
 
   clearTimeout(spawnTimer);
@@ -90,9 +100,6 @@ function startGame(e) {
   scoreText.textContent = score;
   timeText.textContent = time;
 
-  retryBtn.style.opacity = 0;
-  retryBtn.style.pointerEvents = "none";
-
   moveBrush();
 
   showScreen(gameScreen);
@@ -102,42 +109,56 @@ function startGame(e) {
   countdown.style.display = "block";
 
   let count = 3;
+
   countdown.textContent = count;
 
   countdownTimer = setInterval(() => {
+
     count--;
 
     if (count > 0) {
+
       countdown.textContent = count;
+
     } else {
+
       clearInterval(countdownTimer);
+
       countdown.style.display = "none";
+
       countingDown = false;
 
       actuallyStartGame();
     }
+
   }, 1000);
 }
 
 function actuallyStartGame() {
+
   gameStarted = true;
 
   bgm.currentTime = 0;
+
   bgm.play().catch(() => {});
 
   spawnLoop();
 
   countTimer = setInterval(() => {
+
     time--;
+
     timeText.textContent = time;
 
     if (time <= 0) {
       endGame();
     }
+
   }, 1000);
 }
 
 function spawnLoop() {
+
   if (!gameStarted) return;
 
   spawnGerm();
@@ -146,7 +167,11 @@ function spawnLoop() {
 }
 
 function spawnGerm() {
-  const lane = Math.floor(Math.random() * lanes.length);
+
+  const lane = Math.floor(
+    Math.random() * lanes.length
+  );
+
   const spot = lanes[lane];
 
   const isBoss = Math.random() < 0.15;
@@ -183,6 +208,7 @@ function spawnGerm() {
 }
 
 function attack(e) {
+
   if (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -200,6 +226,7 @@ function attack(e) {
   let defeatedBoss = false;
 
   for (let i = germs.length - 1; i >= 0; i--) {
+
     const germ = germs[i];
 
     const germLane = Number(
@@ -207,6 +234,7 @@ function attack(e) {
     );
 
     if (germLane === brushLane) {
+
       hitSomething = true;
 
       let hp = Number(
@@ -225,6 +253,7 @@ function attack(e) {
       );
 
       if (hp <= 0) {
+
         const isBoss =
           germ.dataset.type === "boss";
 
@@ -239,27 +268,35 @@ function attack(e) {
         germ.remove();
 
         germs.splice(i, 1);
+
       } else {
+
         germ.style.transform =
           "scale(0.85) rotate(-8deg)";
 
         setTimeout(() => {
+
           if (germ) {
             germ.style.transform = "";
           }
+
         }, 120);
       }
     }
   }
 
   if (defeatedBoss) {
+
     playSound(seBossDown);
+
   } else if (hitSomething) {
+
     playSound(seBrush);
   }
 }
 
 function makeFoam(x, y) {
+
   const foam = document.createElement("img");
 
   foam.src = "foam.png";
@@ -276,6 +313,7 @@ function makeFoam(x, y) {
 }
 
 function moveBrush() {
+
   const targetX =
     lanes[brushLane].x - brushOffsetX;
 
@@ -283,11 +321,7 @@ function moveBrush() {
     targetX + "px";
 }
 
-function moveLeft(e) {
-  if (e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
+function moveLeft() {
 
   if (!gameStarted) return;
 
@@ -302,11 +336,7 @@ function moveLeft(e) {
   moveBrush();
 }
 
-function moveRight(e) {
-  if (e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
+function moveRight() {
 
   if (!gameStarted) return;
 
@@ -322,17 +352,14 @@ function moveRight(e) {
 }
 
 function endGame() {
+
   gameStarted = false;
-  countingDown = false;
 
   clearTimeout(spawnTimer);
   clearInterval(countTimer);
-  clearInterval(countdownTimer);
 
   bgm.pause();
   bgm.currentTime = 0;
-
-  countdown.style.display = "none";
 
   germLayer.innerHTML = "";
   foamLayer.innerHTML = "";
@@ -347,68 +374,120 @@ function endGame() {
     score + "てん";
 
   if (score >= 800) {
+
     rankText.textContent =
       "はみがきマスター！";
 
     rankImage.src =
       "rank_best.png";
 
+    resultComment.textContent =
+      "むしばきんが にげだした！";
+
   } else if (score >= 450) {
+
     rankText.textContent =
       "ピカピカ！";
 
     rankImage.src =
       "rank_good.png";
 
+    resultComment.textContent =
+      "おくちが ピカピカ！";
+
   } else {
+
     rankText.textContent =
-      "みがき残し…";
+      "みがきのこし…";
 
     rankImage.src =
       "rank_bad.png";
+
+    resultComment.textContent =
+      "もっと ゴシゴシしよう！";
   }
-
-  retryBtn.style.opacity = 0;
-  retryBtn.style.pointerEvents = "none";
-
-  setTimeout(() => {
-    retryBtn.style.opacity = 1;
-    retryBtn.style.pointerEvents = "auto";
-  }, 900);
 }
 
-function resetToTitle(e) {
-  if (e) e.preventDefault();
+function shareScore() {
+
+  let text = "";
+
+  if (score >= 800) {
+
+    text =
+`はみがきマスター！
+
+${score}てん！
+
+無料ブラウザゲーム
+「はみがきしようぜ！」
+https://afoolhippo.github.io/game8/
+
+#はみがきしようぜ
+#カバゲーセン`;
+
+  } else if (score >= 450) {
+
+    text =
+`ピカピカ！
+
+${score}てん！
+
+無料ブラウザゲーム
+「はみがきしようぜ！」
+https://afoolhippo.github.io/game8/
+
+#はみがきしようぜ
+#カバゲーセン`;
+
+  } else {
+
+    text =
+`もっと ゴシゴシしよう！
+
+${score}てん！
+
+無料ブラウザゲーム
+「はみがきしようぜ！」
+https://afoolhippo.github.io/game8/
+
+#はみがきしようぜ
+#カバゲーセン`;
+  }
+
+  const url =
+    "https://twitter.com/intent/tweet?text=" +
+    encodeURIComponent(text);
+
+  window.open(url, "_blank");
+}
+
+function resetToTitle() {
 
   playSound(seButton);
 
   gameStarted = false;
-  countingDown = false;
 
   clearTimeout(spawnTimer);
   clearInterval(countTimer);
-  clearInterval(countdownTimer);
 
   bgm.pause();
   bgm.currentTime = 0;
 
-  countdown.style.display = "none";
-
-  retryBtn.style.opacity = 0;
-  retryBtn.style.pointerEvents = "none";
-
   showScreen(titleScreen);
+}
+
+function goHome() {
+
+  playSound(seButton);
+
+  window.location.href =
+    "https://afoolhippo.github.io/home/";
 }
 
 titleScreen.addEventListener(
   "click",
   startGame
-);
-
-titleScreen.addEventListener(
-  "touchstart",
-  startGame,
-  { passive: false }
 );
 
 leftBtn.addEventListener(
@@ -421,27 +500,9 @@ rightBtn.addEventListener(
   moveRight
 );
 
-leftBtn.addEventListener(
-  "touchstart",
-  moveLeft,
-  { passive: false }
-);
-
-rightBtn.addEventListener(
-  "touchstart",
-  moveRight,
-  { passive: false }
-);
-
 brushBtn.addEventListener(
   "click",
   attack
-);
-
-brushBtn.addEventListener(
-  "touchstart",
-  attack,
-  { passive: false }
 );
 
 retryBtn.addEventListener(
@@ -449,8 +510,17 @@ retryBtn.addEventListener(
   resetToTitle
 );
 
-retryBtn.addEventListener(
-  "touchstart",
-  resetToTitle,
-  { passive: false }
+shareBtn.addEventListener(
+  "click",
+  shareScore
+);
+
+homeBtn.addEventListener(
+  "click",
+  goHome
+);
+
+backButton.addEventListener(
+  "click",
+  resetToTitle
 );
