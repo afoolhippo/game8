@@ -478,11 +478,10 @@ function resetToTitle() {
 }
 
 function goHome() {
-
   playSound(seButton);
 
   window.location.href =
-    "https://afoolhippo.github.io/home/";
+    "https://afoolhippo.github.io/home/?skipTitle=1";
 }
 
 titleScreen.addEventListener(
