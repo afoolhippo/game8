@@ -103,12 +103,14 @@ body {
 
 #hud {
   width: 100%;
+
   display: flex;
   justify-content: space-between;
-  padding: 14px 20px;
+
+  padding: 56px 20px 8px;
+
   font-size: 24px;
 }
-
 #mouthArea {
   width: 100%;
   max-width: 420px;
