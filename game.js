@@ -415,7 +415,7 @@ function shareScore() {
   if (score >= 800) {
 
     text =
-`はみがきマスター！
+`むしばきんが にげだした！
 
 ${score}てん！
 
@@ -429,7 +429,7 @@ https://afoolhippo.github.io/game8/
   } else if (score >= 450) {
 
     text =
-`ピカピカ！
+`おくちが ピカピカ！
 
 ${score}てん！
 
