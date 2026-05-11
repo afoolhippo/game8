@@ -415,8 +415,7 @@ function shareScore() {
   if (score >= 800) {
 
     text =
-`🦷🪥
-むしばきんが にげだした！
+`むしばきんが にげだした！🦷🪥
 
 ${score}てん！
 
@@ -430,8 +429,7 @@ https://afoolhippo.github.io/game8/
   } else if (score >= 450) {
 
     text =
-`🦷🪥
-おくちが ピカピカ！
+`おくちが ピカピカ！🦷🪥
 
 ${score}てん！
 
@@ -445,8 +443,7 @@ https://afoolhippo.github.io/game8/
   } else {
 
     text =
-`🦷🪥
-もっと ゴシゴシしよう！
+`もっと ゴシゴシしよう！🦷🪥
 
 ${score}てん！
 
