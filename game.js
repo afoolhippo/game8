@@ -27,6 +27,20 @@ const resultComment =
 const shareBtn = document.getElementById("shareBtn");
 const retryBtn = document.getElementById("retryBtn");
 const homeBtn = document.getElementById("homeBtn");
+const registerScoreBtn =
+  document.getElementById("registerScoreBtn");
+
+// Supabase
+const SUPABASE_URL =
+  "https://gmncxnybsovlallxgnkd.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "sb_publishable_ly3h5OhL8HDSHhYdmJq_Fw_9pG3mhla";
+
+const kabaDb = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
 // 音声
 const bgm = new Audio("bgm.mp3");
@@ -461,6 +475,40 @@ https://afoolhippo.github.io/game8/
 
   window.open(url, "_blank");
 }
+
+async function registerScore() {
+
+  playSound(seButton);
+
+  const nickname = prompt(
+    "ニックネームを入力してね",
+    "匿名カバ"
+  );
+
+  if (!nickname) return;
+
+  const { error } = await kabaDb
+    .from("kaba_scores")
+    .insert({
+      game_id: "game8",
+      game_title: "はみがきしようぜ！",
+      nickname: nickname,
+      rank_title: rankText.textContent,
+      score: score
+    });
+
+  if (error) {
+
+    console.error(error);
+
+    alert("登録に失敗しました");
+
+    return;
+  }
+
+  alert("記録を登録しました！");
+}
+
 function resetToTitle() {
 
   playSound(seButton);
@@ -511,6 +559,11 @@ retryBtn.addEventListener(
 shareBtn.addEventListener(
   "click",
   shareScore
+);
+
+registerScoreBtn.addEventListener(
+  "click",
+  registerScore
 );
 
 homeBtn.addEventListener(
