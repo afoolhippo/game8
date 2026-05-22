@@ -470,3 +470,36 @@ shareBtn.addEventListener("click", () => {
 
   window.open(url, "_blank");
 });
+
+registerScoreBtn.addEventListener("click", async () => {
+
+  playSound(seButton);
+
+  const nickname = prompt(
+    "ニックネームを入力してね",
+    "匿名カバ"
+  );
+
+  if (!nickname) return;
+
+  const { error } = await kabaDb
+    .from("kaba_scores")
+    .insert({
+      game_id: "game8",
+      game_title: "はみがきしようぜ！",
+      nickname: nickname,
+      rank_title: rankText.textContent,
+      score: score
+    });
+
+  if (error) {
+
+    console.error(error);
+
+    alert("登録に失敗しました");
+
+    return;
+  }
+
+  alert("記録を登録しました！");
+});
