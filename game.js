@@ -431,3 +431,42 @@ function endGame() {
       "もっと ゴシゴシしよう！";
   }
 }
+
+titleScreen.addEventListener("click", startGame);
+titleScreen.addEventListener("touchstart", startGame, { passive: false });
+
+leftBtn.addEventListener("click", moveLeft);
+rightBtn.addEventListener("click", moveRight);
+brushBtn.addEventListener("click", attack);
+
+leftBtn.addEventListener("touchstart", moveLeft, { passive: false });
+rightBtn.addEventListener("touchstart", moveRight, { passive: false });
+brushBtn.addEventListener("touchstart", attack, { passive: false });
+
+backButton.addEventListener("click", () => {
+  location.reload();
+});
+
+retryBtn.addEventListener("click", () => {
+  location.reload();
+});
+
+homeBtn.addEventListener("click", () => {
+  location.href = "https://afoolhippo.github.io/home/?skipTitle=1";
+});
+
+shareBtn.addEventListener("click", () => {
+  const text =
+    `むしばきんをたいじした！🪥✨\n\n` +
+    `${score}てん\n\n` +
+    `無料ブラウザゲーム\n` +
+    `「はみがきしようぜ」\n\n` +
+    `https://afoolhippo.github.io/game8/\n\n` +
+    `#はみがきしようぜ\n#カバゲーセン`;
+
+  const url =
+    "https://twitter.com/intent/tweet?text=" +
+    encodeURIComponent(text);
+
+  window.open(url, "_blank");
+});
