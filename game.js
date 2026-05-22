@@ -27,8 +27,12 @@ const resultComment =
 const shareBtn = document.getElementById("shareBtn");
 const retryBtn = document.getElementById("retryBtn");
 const homeBtn = document.getElementById("homeBtn");
+
 const registerScoreBtn =
   document.getElementById("registerScoreBtn");
+
+const resultButtons =
+  document.getElementById("resultButtons");
 
 // Supabase
 const SUPABASE_URL =
@@ -382,6 +386,12 @@ function endGame() {
 
   showScreen(resultScreen);
 
+  resultButtons.classList.add("hidden");
+
+  setTimeout(() => {
+    resultButtons.classList.remove("hidden");
+  }, 1500);
+
   playSound(seResult);
 
   finalScore.textContent =
@@ -421,157 +431,3 @@ function endGame() {
       "もっと ゴシゴシしよう！";
   }
 }
-
-function shareScore() {
-
-  let text = "";
-
-  if (score >= 800) {
-
-    text =
-`むしばきんが にげだした！🦷🪥
-
-${score}てん！
-
-無料ブラウザゲーム
-「はみがきしようぜ！」
-https://afoolhippo.github.io/game8/
-
-#はみがきしようぜ
-#カバゲーセン`;
-
-  } else if (score >= 450) {
-
-    text =
-`おくちが ピカピカ！🦷🪥
-
-${score}てん！
-
-無料ブラウザゲーム
-「はみがきしようぜ！」
-https://afoolhippo.github.io/game8/
-
-#はみがきしようぜ
-#カバゲーセン`;
-
-  } else {
-
-    text =
-`もっと ゴシゴシしよう！🦷🪥
-
-${score}てん！
-
-無料ブラウザゲーム
-「はみがきしようぜ！」
-https://afoolhippo.github.io/game8/
-
-#はみがきしようぜ
-#カバゲーセン`;
-  }
-
-  const url =
-    "https://twitter.com/intent/tweet?text=" +
-    encodeURIComponent(text);
-
-  window.open(url, "_blank");
-}
-
-async function registerScore() {
-
-  playSound(seButton);
-
-  const nickname = prompt(
-    "ニックネームを入力してね",
-    "匿名カバ"
-  );
-
-  if (!nickname) return;
-
-  const { error } = await kabaDb
-    .from("kaba_scores")
-    .insert({
-      game_id: "game8",
-      game_title: "はみがきしようぜ！",
-      nickname: nickname,
-      rank_title: rankText.textContent,
-      score: score
-    });
-
-  if (error) {
-
-    console.error(error);
-
-    alert("登録に失敗しました");
-
-    return;
-  }
-
-  alert("記録を登録しました！");
-}
-
-function resetToTitle() {
-
-  playSound(seButton);
-
-  gameStarted = false;
-
-  clearTimeout(spawnTimer);
-  clearInterval(countTimer);
-
-  bgm.pause();
-  bgm.currentTime = 0;
-
-  showScreen(titleScreen);
-}
-
-function goHome() {
-  playSound(seButton);
-
-  window.location.href =
-    "https://afoolhippo.github.io/home/?skipTitle=1";
-}
-
-titleScreen.addEventListener(
-  "click",
-  startGame
-);
-
-leftBtn.addEventListener(
-  "click",
-  moveLeft
-);
-
-rightBtn.addEventListener(
-  "click",
-  moveRight
-);
-
-brushBtn.addEventListener(
-  "click",
-  attack
-);
-
-retryBtn.addEventListener(
-  "click",
-  resetToTitle
-);
-
-shareBtn.addEventListener(
-  "click",
-  shareScore
-);
-
-registerScoreBtn.addEventListener(
-  "click",
-  registerScore
-);
-
-homeBtn.addEventListener(
-  "click",
-  goHome
-);
-
-backButton.addEventListener(
-  "click",
-  resetToTitle
-);
